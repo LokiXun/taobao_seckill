@@ -18,10 +18,10 @@ def get_useragent_data(filename: str="./useragents.txt") -> list:
     return data
 
 
-def notify_user(msg: str):
+def notify_user(msg: str, token: str):
     print(msg)
 
-    token = os.getenv("TOKEN")
+    # token = os.getenv("TOKEN")
     if not token:
         return
 

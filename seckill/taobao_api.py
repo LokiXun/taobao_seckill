@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 __author__ = 'Jerry'
+
 import re
 import json
 import time
@@ -26,6 +27,7 @@ def get_cookies():
         if 'taobao' in i.domain:
             session.cookies.set(i.name, i.value)
 
+
 def get_buy_cart():
     """
     获取购物车信息
@@ -39,7 +41,7 @@ def get_buy_cart():
         'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
         'accept-encoding': 'gzip, deflate, br', 'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8',
         'cache-control': 'max-age=0'}
-    res = session.get(url, headers = headers, verify = False)
+    res = session.get(url, headers=headers, verify=False)
     first_data = re.search('try{var firstData = (.*?);}catch', res.text).group(1)
     s_tag = res.headers['s_tag']
     user_rep = re.search('\|\^taoMainUser:(.*?):\^', s_tag)
@@ -91,8 +93,8 @@ def confirm_order(cart_id, item_id, sku_id, seller_id, cart_params, attributes):
                'sec-fetch-dest': 'document', 'referer': 'https://cart.taobao.com/',
                'accept-encoding': 'gzip, deflate, br', 'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8', }
     data = {"item": f"{cart_id}_{item_id}_1_{sku_id}_{seller_id}_0_0_0_{cart_params}_{quote(str(attributes))}__0",
-        "buyer_from": "cart", "source_time": "".join(str(int(time.time() * 1000)))}
-    res = session.post(url = url, data = data, headers = headers, verify = False)
+            "buyer_from": "cart", "source_time": "".join(str(int(time.time() * 1000)))}
+    res = session.post(url=url, data=data, headers=headers, verify=False)
     order_data = re.search('orderData= (.*?);\n</script>', res.text).group(1)
     print("成功发送结算请求")
     return order_data
@@ -134,9 +136,9 @@ def submit_order(order_data, item_id, user_id):
     url = f'https://buy.taobao.com/auction/confirm_order.htm?x-itemid={item_id}&x-uid={user_id}&submitref={submitref}&sparam1={sparam1}'
     new_data = parse_submit_data(data)
     form_data = {'action': '/order/multiTerminalSubmitOrderAction', '_tb_token_': token, 'event_submit_do_confirm': '1',
-        'praper_alipay_cashier_domain': 'cashierrz54', 'input_charset': 'utf-8',
-        'endpoint': quote(json.dumps(endpoint)), 'data': quote(json.dumps(new_data)),
-        'hierarchy': quote(json.dumps({"structure": structure})), 'linkage': quote(json.dumps(linkage)), }
+                 'praper_alipay_cashier_domain': 'cashierrz54', 'input_charset': 'utf-8',
+                 'endpoint': quote(json.dumps(endpoint)), 'data': quote(json.dumps(new_data)),
+                 'hierarchy': quote(json.dumps({"structure": structure})), 'linkage': quote(json.dumps(linkage)), }
     headers = {'cache-control': 'max-age=0', 'upgrade-insecure-requests': '1', 'origin': 'https://buy.taobao.com',
                'content-type': 'application/x-www-form-urlencoded',
                'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36',
@@ -145,7 +147,7 @@ def submit_order(order_data, item_id, user_id):
                'sec-fetch-dest': 'document',
                'referer': 'https://buy.taobao.com/auction/order/confirm_order.htm?spm=a1z0d.6639537.0.0.undefined',
                'accept-encoding': 'gzip, deflate, br', 'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8'}
-    res = session.post(url = url, data = form_data, headers = headers, verify = False)
+    res = session.post(url=url, data=form_data, headers=headers, verify=False)
     if res.status_code == 200:
         print('成功提交订单')
 
@@ -165,8 +167,8 @@ def run_with_selenium_cookie():
     """
     seckill_time = '2021-01-23 15:05:00'
     seckill_time_obj = datetime.datetime.strptime(seckill_time, '%Y-%m-%d %H:%M:%S')
-    ChromeDrive(seckill_time = seckill_time).keep_wait()
-    with open('./cookies.txt', 'r', encoding = 'utf-8') as f:
+    ChromeDrive(seckill_time=seckill_time).keep_wait()
+    with open('./cookies.txt', 'r', encoding='utf-8') as f:
         data = f.read()
     cookies = json.loads(data)
     for cookie in cookies:
